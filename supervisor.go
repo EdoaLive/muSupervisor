@@ -63,6 +63,12 @@ func init() {
 }
 
 func supervisor() {
+	if Opts.Disable == true {
+		fmt.Println("supervisor disabled.")
+		return
+	}
+	fmt.Println("supervisor enabled.")
+
 	var mutexes mutexMap
 	mutexes.mutexOpMap = make(mutexOpMap)
 
