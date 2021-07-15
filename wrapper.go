@@ -29,34 +29,36 @@ var Opts = struct {
 type supervisedMutex struct{}
 
 type Mutex struct {
+	supervisedMutex
 	mu sync.Mutex
 }
 
 type RWMutex struct {
+	supervisedMutex
 	mu sync.RWMutex
 }
 
 func (m *Mutex) Lock() {
-	mutexOp(LOCK, m, m.mu.Lock)
+	m.mutexOp(LOCK, m.mu.Lock)
 }
 func (m *Mutex) Unlock() {
-	mutexOp(UNLOCK, m, m.mu.Unlock)
+	m.mutexOp(UNLOCK, m.mu.Unlock)
 }
 
 func (m *RWMutex) Lock() {
-	mutexOp(LOCK, m, m.mu.Lock)
+	m.mutexOp(LOCK, m.mu.Lock)
 }
 func (m *RWMutex) Unlock() {
-	mutexOp(UNLOCK, m, m.mu.Unlock)
+	m.mutexOp(UNLOCK, m.mu.Unlock)
 }
 func (m *RWMutex) RLock() {
-	mutexOp(RLOCK, m, m.mu.RLock)
+	m.mutexOp(RLOCK, m.mu.RLock)
 }
 func (m *RWMutex) RUnlock() {
-	mutexOp(RUNLOCK, m, m.mu.RUnlock)
+	m.mutexOp(RUNLOCK, m.mu.RUnlock)
 }
 
-func mutexOp(t opType, m interface{}, f func()) {
+func (m *supervisedMutex) mutexOp(t opType, f func()) {
 
 	if Opts.Disable == true {
 		f()

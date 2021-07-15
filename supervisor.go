@@ -31,7 +31,7 @@ type routineNum uint64
 type opData struct {
 	t          opType
 	numRoutine routineNum
-	mutexPtr   mutexPointer
+	mutexPtr   *supervisedMutex
 	reqTime    time.Time
 	state      opState
 	stackTrace *string
