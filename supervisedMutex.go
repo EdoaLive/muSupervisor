@@ -1,9 +1,11 @@
 package muSupervisor
 
-type supervisedMutex struct{}
+type supervisedMutex struct {
+	lastOp opType
+}
 
 func (m *supervisedMutex) mutexOp(t opType, f func()) {
-
+	m.lastOp = t
 	if Opts.Disable == true {
 		f()
 		return
