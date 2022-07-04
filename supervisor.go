@@ -49,12 +49,13 @@ func supervisor() {
 
 func logOpDetails(op *opData) {
 	now := time.Now()
-	fmt.Printf("\tGoRoutine: %v, state: %v, type: %v, time: %v, request: %p\n",
+	fmt.Printf("\tGoRoutine: %v, state: %v, type: %v, time: %v, request: %p, mutex: %p\n",
 		op.numRoutine,
 		op.state,
 		op.t,
 		now.Sub(op.reqTime),
 		op,
+		op.mutexPtr,
 	)
 	if op.stackTrace != nil {
 		fmt.Printf("%s\n\n", *op.stackTrace)

@@ -20,7 +20,6 @@ const (
 	DONE
 )
 
-type mutexPointer interface{}
 type routineNum uint64
 
 type opData struct {

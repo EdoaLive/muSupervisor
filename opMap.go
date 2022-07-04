@@ -21,7 +21,12 @@ func (om *opMap) checkPending() {
 		for e := l.Front(); e != nil; e = e.Next() {
 			pendingReq := e.Value.(*opData)
 			pendingTime := now.Sub(pendingReq.reqTime)
-			if pendingReq.state == PENDING && pendingTime >= Opts.DeadlockTimeout && !pendingReq.alreadyLogged {
+
+			if pendingReq.state == PENDING &&
+				pendingTime >= Opts.DeadlockTimeout &&
+				!pendingReq.alreadyLogged {
+				//There we have a pending lock
+
 				pendingReq.alreadyLogged = true
 				fmt.Println("\n=======================================================================")
 				fmt.Println("Mutex request timeout for request:")
