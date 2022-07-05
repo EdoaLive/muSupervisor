@@ -8,11 +8,13 @@ import (
 var opReq chan *opData
 var opObtained chan *opData
 var unlockChan chan *opData
+var unlockedChan chan struct{}
 
 func init() {
 	opReq = make(chan *opData)
 	opObtained = make(chan *opData)
 	unlockChan = make(chan *opData)
+	unlockedChan = make(chan struct{})
 
 	go supervisor()
 }
@@ -35,10 +37,11 @@ func supervisor() {
 			newMutexMap.mapRequest(opD)
 
 		case opD := <-opObtained:
-			opD.trackObtained()
+			newMutexMap.mapObtained(opD)
 
 		case opD := <-unlockChan:
 			newMutexMap.mapUnlock(opD)
+			unlockedChan <- struct{}{}
 
 		case <-t.C:
 			newMutexMap.doCheck()
@@ -49,7 +52,7 @@ func supervisor() {
 
 func logOpDetails(op *opData) {
 	now := time.Now()
-	fmt.Printf("\tGoRoutine: %v, state: %v, type: %v, time: %v, request: %p, mutex: %p\n",
+	fmt.Printf("Routine: %v, state: %v, type: %v, time: %v, request: %p, mutex: %p\n",
 		op.numRoutine,
 		op.state,
 		op.t,

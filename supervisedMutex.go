@@ -15,6 +15,9 @@ func (m *supervisedMutex) mutexOp(t opType, f func()) {
 		mutexPtr:   m,
 	}
 
+	//TODO: While lock requested and obtained are always the same op, unlock may be not.
+	// There's no need to create an opData for all 3 channels: cleanup this code.
+
 	switch t {
 	case LOCK, RLOCK:
 
@@ -26,7 +29,8 @@ func (m *supervisedMutex) mutexOp(t opType, f func()) {
 		opObtained <- &op
 
 	case UNLOCK, RUNLOCK:
-		f()
 		unlockChan <- &op
+		<-unlockedChan // wait for unlock to be done
+		f()
 	}
 }

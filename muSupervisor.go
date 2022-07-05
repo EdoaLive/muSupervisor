@@ -15,5 +15,5 @@ var Opts = struct {
 	Disable:         false,
 	DeadlockTimeout: time.Second * 5,
 	CheckFrequency:  time.Second * 1,
-	CleanTimeout:    time.Second * 20,
+	CleanTimeout:    time.Second * 5,
 }

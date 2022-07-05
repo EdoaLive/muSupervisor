@@ -18,10 +18,17 @@ const (
 	PENDING opState = iota
 	ACTIVE
 	DONE
+	DONERWAIT // Read unlocked but waiting for all other read locks to be gone
 )
 
 type routineNum uint64
 
+//TODO: split opData with reqData. See the TODO in supervisedMutex.go
+// The distinction is
+//	Operation: a cycle of LOCK, OBTAIN, UNLOCK operations for a mutex
+//  Request: the single LOCK/UNLOCK request
+
+// opData represents the specific lock/unlock operation for a request.
 type opData struct {
 	t          opType
 	numRoutine routineNum
@@ -33,6 +40,6 @@ type opData struct {
 	alreadyLogged bool
 }
 
-func (d *opData) trackObtained() {
-	d.state = ACTIVE
+// reqData represents one of the requests for a mutex (which may have more than one op)
+type reqData struct {
 }
